@@ -491,3 +491,151 @@
   padding: 10px 14px;
   line-height: 1.5;
 }
+
+.edit-btn {
+  font-size:11px; color:var(--lilac-600); background:var(--lilac-50);
+  border:1px solid var(--lilac-200); cursor:pointer;
+  padding:3px 10px; border-radius:8px; transition:all .15s;
+  font-family:'DM Sans',sans-serif; font-weight:500;
+}
+
+.edit-btn:hover { background:var(--lilac-100); border-color:var(--lilac-400); }
+  /* ===== MODAL DE EDIÇÃO ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(45, 31, 78, 0.45);
+    backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open {
+    display: flex;
+    animation: modalFadeIn 0.2s ease;
+  }
+  @keyframes modalFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .modal {
+    background: white;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 32px 80px rgba(45, 31, 78, 0.3), 0 8px 32px rgba(45, 31, 78, 0.15);
+    animation: modalSlideIn 0.25s ease;
+  }
+  @keyframes modalSlideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: white;
+    border-radius: 24px 24px 0 0;
+    z-index: 1;
+  }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--lilac-50);
+    color: var(--lilac-600);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    line-height: 1;
+  }
+  .modal-close:hover {
+    background: var(--lilac-100);
+    transform: rotate(90deg);
+  }
+
+  .modal-body {
+    padding: 20px 24px 24px;
+  }
+  .modal-body .form-row {
+    margin-bottom: 14px;
+  }
+
+  .modal-footer {
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-radius: 0 0 24px 24px;
+  }
+
+  /* ===== RANGE ROW (Intensidade / Desempenho) ===== */
+  .range-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 4px;
+  }
+  .range-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .range-row input[type="range"] {
+    flex: 1;
+    padding: 0;
+    border: none;
+    background: none;
+    box-shadow: none;
+  }
+  .range-row input[type="range"]:focus {
+    box-shadow: none;
+  }
+  .range-val {
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 20px;
+    color: var(--lilac-600);
+    text-align: center;
+  }
+
+  /* ===== CARD ACTIONS ===== */
+  .card-actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  /* ===== CARD NOTE ===== */
+  .card-note {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }

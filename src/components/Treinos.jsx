@@ -1,15 +1,22 @@
 import { useState } from 'react';
 import { fmt, starRating } from '../utils/formatters';
 
-export function Treinos({ treinos, onAdd, onRemove }) {
+export function Treinos({ treinos, onAdd, onRemove, onUpdate }) {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ data: '', tipo: 'Passeio', dur: '', perf: 3, cmd: '', obs: '' });
+  const [editando, setEditando] = useState(null);
 
   function handleSave() {
     if (!form.data) return;
     onAdd(form);
     setForm({ data: '', tipo: 'Passeio', dur: '', perf: 3, cmd: '', obs: '' });
     setOpen(false);
+  }
+
+  function handleSaveEdit() {
+    if (!editando.data) return;
+    onUpdate(editando.id, editando);
+    setEditando(null);
   }
 
   return (
@@ -31,6 +38,7 @@ export function Treinos({ treinos, onAdd, onRemove }) {
               </div>
               <div className="card-actions">
                 <span style={{ fontSize: 15 }}>{starRating(t.perf)}</span>
+                <button className="edit-btn" onClick={() => setEditando({ ...t })}>editar</button>
                 <button className="delete-btn" onClick={() => { if (window.confirm('Remover este registro?')) onRemove(t.id); }}>remover</button>
               </div>
             </div>
@@ -68,6 +76,44 @@ export function Treinos({ treinos, onAdd, onRemove }) {
             <div className="form-actions">
               <button className="btn-cancel" onClick={() => setOpen(false)}>Cancelar</button>
               <button className="btn-save" onClick={handleSave}>Salvar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de edição */}
+      {editando && (
+        <div className="modal-overlay open" onClick={() => setEditando(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <span className="modal-title">Editar Treino</span>
+              <button className="modal-close" onClick={() => setEditando(null)}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="form-row"><label>Data</label><input type="date" value={editando.data || ''} onChange={e => setEditando(f => ({ ...f, data: e.target.value }))} /></div>
+              <div className="form-row">
+                <label>Tipo de treino</label>
+                <select value={editando.tipo || 'Passeio'} onChange={e => setEditando(f => ({ ...f, tipo: e.target.value }))}>
+                  <option>Passeio</option><option>Obediência básica</option><option>Socialização</option>
+                  <option>Agilidade</option><option>Nosework</option><option>Livre</option><option>Outro</option>
+                </select>
+              </div>
+              <div className="form-row"><label>Duração</label><input value={editando.dur || ''} onChange={e => setEditando(f => ({ ...f, dur: e.target.value }))} placeholder="Ex: 30 minutos" /></div>
+              <div className="form-row">
+                <label>Desempenho geral</label>
+                <div className="range-row">
+                  <span className="range-label">Difícil</span>
+                  <input type="range" min="1" max="5" value={editando.perf || 3} onChange={e => setEditando(f => ({ ...f, perf: e.target.value }))} />
+                  <span className="range-label">Ótimo</span>
+                  <span className="range-val">{starRating(editando.perf)}</span>
+                </div>
+              </div>
+              <div className="form-row"><label>Comandos praticados</label><input value={editando.cmd || ''} onChange={e => setEditando(f => ({ ...f, cmd: e.target.value }))} placeholder="Ex: Senta, fica, pé…" /></div>
+              <div className="form-row"><label>Observações</label><textarea value={editando.obs || ''} onChange={e => setEditando(f => ({ ...f, obs: e.target.value }))} placeholder="Como foi o treino, dificuldades, conquistas…" /></div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={() => setEditando(null)}>Cancelar</button>
+              <button className="btn-save" onClick={handleSaveEdit}>Salvar</button>
             </div>
           </div>
         </div>

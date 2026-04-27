@@ -1,15 +1,22 @@
 import { useState } from 'react';
 import { fmt } from '../utils/formatters';
 
-export function Vacinas({ vacinas, onAdd, onRemove, isPast, isExpiring }) {
+export function Vacinas({ vacinas, onAdd, onRemove, onUpdate, isPast, isExpiring }) {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ nome: '', data: '', proxima: '', vet: '', obs: '' });
+  const [editando, setEditando] = useState(null);
 
   function handleSave() {
     if (!form.nome.trim()) return;
     onAdd(form);
     setForm({ nome: '', data: '', proxima: '', vet: '', obs: '' });
     setOpen(false);
+  }
+
+  function handleSaveEdit() {
+    if (!editando.nome.trim()) return;
+    onUpdate(editando.id, editando);
+    setEditando(null);
   }
 
   return (
@@ -36,6 +43,7 @@ export function Vacinas({ vacinas, onAdd, onRemove, isPast, isExpiring }) {
                 </div>
                 <div className="card-actions">
                   <span className={`badge ${badgeClass}`}>{badgeTxt}</span>
+                  <button className="edit-btn" onClick={() => setEditando({ ...v })}>editar</button>
                   <button className="delete-btn" onClick={() => { if (window.confirm('Remover este registro?')) onRemove(v.id); }}>remover</button>
                 </div>
               </div>
@@ -62,6 +70,29 @@ export function Vacinas({ vacinas, onAdd, onRemove, isPast, isExpiring }) {
             <div className="form-actions">
               <button className="btn-cancel" onClick={() => setOpen(false)}>Cancelar</button>
               <button className="btn-save" onClick={handleSave}>Salvar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de edição */}
+      {editando && (
+        <div className="modal-overlay open" onClick={() => setEditando(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <span className="modal-title">Editar Vacina</span>
+              <button className="modal-close" onClick={() => setEditando(null)}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="form-row"><label>Vacina</label><input value={editando.nome} onChange={e => setEditando(f => ({ ...f, nome: e.target.value }))} /></div>
+              <div className="form-row"><label>Data de aplicação</label><input type="date" value={editando.data} onChange={e => setEditando(f => ({ ...f, data: e.target.value }))} /></div>
+              <div className="form-row"><label>Próxima dose</label><input type="date" value={editando.proxima || ''} onChange={e => setEditando(f => ({ ...f, proxima: e.target.value }))} /></div>
+              <div className="form-row"><label>Veterinário / Clínica</label><input value={editando.vet || ''} onChange={e => setEditando(f => ({ ...f, vet: e.target.value }))} placeholder="Nome ou clínica" /></div>
+              <div className="form-row"><label>Observações</label><textarea value={editando.obs || ''} onChange={e => setEditando(f => ({ ...f, obs: e.target.value }))} placeholder="Reações, lote…" /></div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={() => setEditando(null)}>Cancelar</button>
+              <button className="btn-save" onClick={handleSaveEdit}>Salvar</button>
             </div>
           </div>
         </div>

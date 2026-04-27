@@ -42,6 +42,15 @@ export function useNalaStore() {
     }));
   }
 
+  function update(section, id, dadosNovos) {
+    setState(prev => ({
+      ...prev,
+      [section]: prev[section].map(item =>
+        item.id === id ? { ...item, ...dadosNovos } : item
+      )
+    }));
+  }
+
   function toggleMedicacao(id) {
     setState(prev => ({
       ...prev,
@@ -67,5 +76,5 @@ export function useNalaStore() {
     return new Date(dateStr) < new Date();
   }
 
-  return { state, add, remove, toggleMedicacao, importData, isExpiring, isPast };
+  return { state, add, remove, update, toggleMedicacao, importData, isExpiring, isPast };
 }

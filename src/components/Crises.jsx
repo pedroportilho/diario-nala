@@ -1,15 +1,22 @@
 import { useState } from 'react';
 import { fmtDt } from '../utils/formatters';
 
-export function Crises({ crises, onAdd, onRemove }) {
+export function Crises({ crises, onAdd, onRemove, onUpdate }) {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ data: '', dur: '', intens: 3, tipo: 'Convulsão', sint: '', gatilho: '', med: '' });
+  const [editando, setEditando] = useState(null);
 
   function handleSave() {
     if (!form.data) return;
     onAdd(form);
     setForm({ data: '', dur: '', intens: 3, tipo: 'Convulsão', sint: '', gatilho: '', med: '' });
     setOpen(false);
+  }
+
+  function handleSaveEdit() {
+    if (!editando.data) return;
+    onUpdate(editando.id, editando);
+    setEditando(null);
   }
 
   return (
@@ -35,6 +42,7 @@ export function Crises({ crises, onAdd, onRemove }) {
                 </div>
                 <div className="card-actions">
                   <span className="badge" style={{ background: intensBg, color: intensColor }}>Intensidade {c.intens}/5</span>
+                  <button className="edit-btn" onClick={() => setEditando({ ...c })}>editar</button>
                   <button className="delete-btn" onClick={() => { if (window.confirm('Remover este registro?')) onRemove(c.id); }}>remover</button>
                 </div>
               </div>
@@ -78,6 +86,45 @@ export function Crises({ crises, onAdd, onRemove }) {
             <div className="form-actions">
               <button className="btn-cancel" onClick={() => setOpen(false)}>Cancelar</button>
               <button className="btn-save" onClick={handleSave}>Salvar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de edição */}
+      {editando && (
+        <div className="modal-overlay open" onClick={() => setEditando(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <span className="modal-title">Editar Crise</span>
+              <button className="modal-close" onClick={() => setEditando(null)}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="form-row"><label>Data e hora</label><input type="datetime-local" value={editando.data || ''} onChange={e => setEditando(f => ({ ...f, data: e.target.value }))} /></div>
+              <div className="form-row"><label>Duração estimada</label><input value={editando.dur || ''} onChange={e => setEditando(f => ({ ...f, dur: e.target.value }))} placeholder="Ex: 2 minutos" /></div>
+              <div className="form-row">
+                <label>Intensidade</label>
+                <div className="range-row">
+                  <span className="range-label">Leve</span>
+                  <input type="range" min="1" max="5" value={editando.intens || 3} onChange={e => setEditando(f => ({ ...f, intens: e.target.value }))} />
+                  <span className="range-label">Forte</span>
+                  <span className="range-val">{editando.intens}</span>
+                </div>
+              </div>
+              <div className="form-row">
+                <label>Tipo de crise</label>
+                <select value={editando.tipo || 'Convulsão'} onChange={e => setEditando(f => ({ ...f, tipo: e.target.value }))}>
+                  <option>Convulsão</option><option>Crise alérgica</option>
+                  <option>Crise respiratória</option><option>Crise comportamental</option><option>Outro</option>
+                </select>
+              </div>
+              <div className="form-row"><label>Sintomas observados</label><textarea value={editando.sint || ''} onChange={e => setEditando(f => ({ ...f, sint: e.target.value }))} placeholder="O que aconteceu, comportamento da Nala…" /></div>
+              <div className="form-row"><label>Gatilho possível</label><input value={editando.gatilho || ''} onChange={e => setEditando(f => ({ ...f, gatilho: e.target.value }))} placeholder="Ex: após comer, após passeio…" /></div>
+              <div className="form-row"><label>Medicamento administrado</label><input value={editando.med || ''} onChange={e => setEditando(f => ({ ...f, med: e.target.value }))} placeholder="Deixe em branco se não administrou" /></div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={() => setEditando(null)}>Cancelar</button>
+              <button className="btn-save" onClick={handleSaveEdit}>Salvar</button>
             </div>
           </div>
         </div>
