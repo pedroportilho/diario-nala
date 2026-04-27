@@ -13,7 +13,7 @@ const TABS = [
   { id: 'vacinas',    label: '💉 Vacinas' },
   { id: 'consultas',  label: '🏥 Consultas' },
   { id: 'crises',     label: '📋 Crises' },
-  { id: 'medicacoes', label: '💊 Medicações' },
+  { id: 'medicacoes', label: '💊 Remédios' },
   { id: 'treinos',    label: '🏃 Treinos' },
   { id: 'backup',     label: '💾 Backup' },
 ];

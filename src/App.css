@@ -639,3 +639,18 @@
     color: var(--text-secondary);
     line-height: 1.5;
   }
+
+  @media only screen and (max-width: 767px){
+    .hero {
+      padding: 5px  0;
+    }
+    .app {
+      margin: 0 auto;
+      padding: 15px 2px;
+    }
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+  }
